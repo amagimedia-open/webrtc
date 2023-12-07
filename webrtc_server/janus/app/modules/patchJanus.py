@@ -16,7 +16,7 @@ def patch_janus_config_file(input_file, output_file, args):
 def patch_janus_main_conf(cfg_dict):
     args = {}
     input_file = "../templates/janus.jcfg.template"
-    output_file = "/opt/janus/etc/janus/janus.jcfg"
+    output_file = "/opt/etc/janus/janus.jcfg"
 
     args["debug_level"] = "5"
     args["rtp_port_range"] = "\"%s\""%cfg_dict["rtp_port_range"]
@@ -49,7 +49,7 @@ def patch_janus_main_conf(cfg_dict):
 def patch_janus_plugin_streaming_conf(cfg_dict):
     args = {}
     input_file = "../templates/janus.plugin.streaming.jcfg.template"
-    output_file = "/opt/janus/etc/janus/janus.plugin.streaming.jcfg"
+    output_file = "/opt/etc/janus/janus.plugin.streaming.jcfg"
     args["type"] = "\"rtp\""
     args["id"] = 1
     args["description"] = "\"Opus/H264 live stream coming from gstreamer\""
@@ -66,7 +66,7 @@ def patch_janus_plugin_streaming_conf(cfg_dict):
 def patch_janus_transport_http_conf(cfg_dict):
     args = {}
     input_file = "../templates/janus.transport.http.jcfg.template"
-    output_file = "/opt/janus/etc/janus/janus.transport.http.jcfg"
+    output_file = "/opt/etc/janus/janus.transport.http.jcfg"
     args["http"] = "true"
     args["http_port"] = cfg_dict["http_port"]
     args["admin_http_port"] = cfg_dict["admin_http_port"]
@@ -75,7 +75,7 @@ def patch_janus_transport_http_conf(cfg_dict):
 def patch_janus_transport_websockets_conf(cfg_dict):
     args = {}
     input_file = "../templates/janus.transport.websockets.jcfg.template"
-    output_file = "/opt/janus/etc/janus/janus.transport.websockets.jcfg"
+    output_file = "/opt/etc/janus/janus.transport.websockets.jcfg"
     args["ws"] = "true"
     args["ws_port"] = cfg_dict["websocket_port"]
     args["admin_ws_port"] = cfg_dict["admin_websocket_port"]
