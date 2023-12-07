@@ -44,7 +44,6 @@ class JanusServerConf:
         cfg_dict["rtp_port_range"] = self.parser.get_janus_rtp_port_range()
         cfg_dict["enable_nat_1_to_1_mapping"] = self.parser.get_janus_enable_nat_1_to_1_mapping()
         cfg_dict["public_ip"]      = self.parser.get_janus_public_ip()
-        cfg_dict["debug_level"]    = self.parser.get_janus_debug_level()
         cfg_dict["admin_http_port"] = self.parser.get_janus_admin_http_port()
         cfg_dict["admin_websocket_port"] = self.parser.get_janus_admin_websocket_port()
 

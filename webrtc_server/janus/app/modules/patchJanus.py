@@ -1,9 +1,12 @@
 import sys
+import os
 import pkg_resources
 from jinja2 import Template
 
 def patch_janus_config_file(input_file, output_file, args):
-    with open(input_file, mode='r') as inp_f:
+    script_dir = os.path.dirname(__file__) #absolute dir the script is in
+    abs_input_file_path = os.path.join(script_dir, input_file)
+    with open(abs_input_file_path, mode='r') as inp_f:
         inp_f_str = inp_f.read()
     tm = Template(inp_f_str)
     msg = tm.render(args=args)
@@ -12,11 +15,10 @@ def patch_janus_config_file(input_file, output_file, args):
 
 def patch_janus_main_conf(cfg_dict):
     args = {}
-    input_file = pkg_resources.resource_filename("webrtc_server", \
-            "janus/app/templates/janus.jcfg.template")
+    input_file = "../templates/janus.jcfg.template"
     output_file = "/opt/janus/etc/janus/janus.jcfg"
 
-    args["debug_level"] = cfg_dict["debug_level"]
+    args["debug_level"] = "5"
     args["rtp_port_range"] = "\"%s\""%cfg_dict["rtp_port_range"]
     if cfg_dict["enable_nat_1_to_1_mapping"] == 1:
         args["enable_nat_1_to_1_mapping"] = 1
@@ -46,8 +48,7 @@ def patch_janus_main_conf(cfg_dict):
 
 def patch_janus_plugin_streaming_conf(cfg_dict):
     args = {}
-    input_file = pkg_resources.resource_filename("webrtc_server", \
-            "janus/app/templates/janus.plugin.streaming.jcfg.template")
+    input_file = "../templates/janus.plugin.streaming.jcfg.template"
     output_file = "/opt/janus/etc/janus/janus.plugin.streaming.jcfg"
     args["type"] = "\"rtp\""
     args["id"] = 1
@@ -64,8 +65,7 @@ def patch_janus_plugin_streaming_conf(cfg_dict):
 
 def patch_janus_transport_http_conf(cfg_dict):
     args = {}
-    input_file = pkg_resources.resource_filename("webrtc_server", \
-            "janus/app/templates/janus.transport.http.jcfg.template")
+    input_file = "../templates/janus.transport.http.jcfg.template"
     output_file = "/opt/janus/etc/janus/janus.transport.http.jcfg"
     args["http"] = "true"
     args["http_port"] = cfg_dict["http_port"]
@@ -74,8 +74,7 @@ def patch_janus_transport_http_conf(cfg_dict):
 
 def patch_janus_transport_websockets_conf(cfg_dict):
     args = {}
-    input_file = pkg_resources.resource_filename("webrtc_server", \
-            "janus/app/templates/janus.transport.websockets.jcfg.template")
+    input_file = "../templates/janus.transport.websockets.jcfg.template"
     output_file = "/opt/janus/etc/janus/janus.transport.websockets.jcfg"
     args["ws"] = "true"
     args["ws_port"] = cfg_dict["websocket_port"]

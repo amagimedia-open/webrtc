@@ -40,140 +40,110 @@ class ConfigParser:
 
 
   def get_janus_input_video_port(self):
-    if self.__config['app_name'] == "es_to_webrtc":
-      if str(self.__config['es_webrtc_enable_monitoring']) == "1":
-        if "es_webrtc_output_video_port" in self.__config:
-          return (str(self.__config['es_webrtc_output_video_port']))
-        else:
-          return ""
-      else:
-        if "es_webrtc_input_video_port" in self.__config:
-          return (str(self.__config['es_webrtc_input_video_port']))
-        else:
-          return ""
+    if "input_video_port" in self.__config:
+      return (str(self.__config['input_video_port']))
     else:
-      if "webrtc_output_video_port" in self.__config:
-        return (str(self.__config['webrtc_output_video_port']))
-      else:
-        return ""
+      return ""
 
   def get_janus_input_audio_port(self):
-    if self.__config['app_name'] == "es_to_webrtc":
-      if str(self.__config['es_webrtc_enable_monitoring']) == "1":
-        if "es_webrtc_output_audio_port" in self.__config:
-          return (str(self.__config['es_webrtc_output_audio_port']))
-        else:
-          return ""
-      else:
-        if "es_webrtc_input_audio_port" in self.__config:
-          return (str(self.__config['es_webrtc_input_audio_port']))
-        else:
-          return ""
+    if "input_audio_port" in self.__config:
+      return (str(self.__config['input_audio_port']))
     else:
-      if "webrtc_output_audio_port" in self.__config:
-        return (str(self.__config['webrtc_output_audio_port']))
-      else:
-        return ""
+      return ""
 
   def get_janus_ice_interface(self):
-    if "webrtc_janus_interface" in self.__config:
-      return (str(self.__config['webrtc_janus_interface']))
+    if "interface" in self.__config:
+      return (str(self.__config['interface']))
     else:
       return ""
 
   def get_janus_enable_stun(self):
-    if "webrtc_janus_enable_stun" in self.__config:
-      return (int(self.__config['webrtc_janus_enable_stun']))
+    if "enable_stun" in self.__config:
+      return (int(self.__config['enable_stun']))
     else:
       return -1
 
   def get_janus_stun_server(self):
-    if "webrtc_janus_stun_server" in self.__config:
-      return (str(self.__config['webrtc_janus_stun_server']))
+    if "stun_server" in self.__config:
+      return (str(self.__config['stun_server']))
     else:
       return ""
 
   def get_janus_stun_port(self):
-    if "webrtc_janus_stun_port" in self.__config:
-      return (str(self.__config['webrtc_janus_stun_port']))
+    if "stun_port" in self.__config:
+      return (str(self.__config['stun_port']))
     else:
       return ""
 
   def get_janus_enable_turn(self):
-    if "webrtc_janus_enable_turn" in self.__config:
-      return (int(self.__config['webrtc_janus_enable_turn']))
+    if "enable_turn" in self.__config:
+      return (int(self.__config['enable_turn']))
     else:
       return -1
 
   def get_janus_turn_server(self):
-    if "webrtc_janus_turn_server" in self.__config:
-      return (str(self.__config['webrtc_janus_turn_server']))
+    if "turn_server" in self.__config:
+      return (str(self.__config['turn_server']))
     else:
       return ""
 
   def get_janus_turn_port(self):
-    if "webrtc_janus_turn_port" in self.__config:
-      return (str(self.__config['webrtc_janus_turn_port']))
+    if "turn_port" in self.__config:
+      return (str(self.__config['turn_port']))
     else:
       return ""
 
   def get_janus_turn_username(self):
-    if "webrtc_janus_turn_username" in self.__config:
-      return (str(self.__config['webrtc_janus_turn_username']))
+    if "turn_username" in self.__config:
+      return (str(self.__config['turn_username']))
     else:
       return ""
 
   def get_janus_turn_password(self):
-    if "webrtc_janus_turn_password" in self.__config:
-      return (str(self.__config['webrtc_janus_turn_password']))
+    if "turn_password" in self.__config:
+      return (str(self.__config['turn_password']))
     else:
       return ""
 
   def get_janus_http_port(self):
-    if "webrtc_janus_http_port" in self.__config:
-      return (str(self.__config['webrtc_janus_http_port']))
+    if "http_port" in self.__config:
+      return (str(self.__config['http_port']))
     else:
       return ""
 
   def get_janus_websocket_port(self):
-    if "webrtc_janus_websocket_port" in self.__config:
-      return (str(self.__config['webrtc_janus_websocket_port']))
+    if "websocket_port" in self.__config:
+      return (str(self.__config['websocket_port']))
     else:
       return ""
 
   def get_janus_rtp_port_range(self):
-    if "webrtc_janus_rtp_port_range" in self.__config:
-      return (str(self.__config['webrtc_janus_rtp_port_range']))
+    if "rtp_port_range" in self.__config:
+      return (str(self.__config['rtp_port_range']))
     else:
       return ""
 
   def get_janus_enable_nat_1_to_1_mapping(self):
-    if "webrtc_janus_enable_nat_1_to_1_mapping" in self.__config:
-      return (int(self.__config['webrtc_janus_enable_nat_1_to_1_mapping']))
+    if "enable_nat_1_to_1_mapping" in self.__config:
+      return (int(self.__config['enable_nat_1_to_1_mapping']))
     else:
       return -1
 
   def get_janus_public_ip(self):
-    if "webrtc_janus_public_ip" in self.__config:
-      return (str(self.__config['webrtc_janus_public_ip']))
+    if "public_ip" in self.__config:
+      return (str(self.__config['public_ip']))
     else:
       return ""
 
-  def get_janus_debug_level(self):
-      if "janus_debug_level" in self.__config:
-        return (int(self.__config['janus_debug_level']))
-      else:
-        return -1
-
   def get_janus_admin_http_port(self):
-      if "janus_admin_http_port" in self.__config:
-        return (int(self.__config['janus_admin_http_port']))
+      if "admin_http_port" in self.__config:
+        return (int(self.__config['admin_http_port']))
       else:
         return -1
 
   def get_janus_admin_websocket_port(self):
-      if "janus_admin_websocket_port" in self.__config:
-        return (int(self.__config['janus_admin_websocket_port']))
+      if "admin_websocket_port" in self.__config:
+        return (int(self.__config['admin_websocket_port']))
       else:
         return -1
 ###############################################################################

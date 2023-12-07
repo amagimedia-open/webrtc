@@ -11,15 +11,13 @@ import fileinput
 import subprocess
 import psutil
 
-from os import environ
 from config import JanusServerConf
 from modules import patchJanus
 from modules import webrtcSessionLogger
 
 class WebRTCServer:
     def __init__(self):
-        self.JANUS_CONF_FILE_PATH = "/opt/janus/etc/janus/janus.jcfg"
-        self.JANUS_STREAMING_PLUGIN_CONF_FILE_PATH = "/opt/janus/etc/janus/janus.plugin.streaming.jcfg"
+        self.APP_CONF_FILE_PATH = "/home/root/installation/config.ini"
         self.last_log_time_ms = 0
         self.LOG_INTERVAL = 10000 #in ms
         self.janus_conf = self.get_configs()
@@ -33,15 +31,14 @@ class WebRTCServer:
         self.start_server()
 
     def get_configs(self):
-        cfg_file = environ['CONFIG_FILE']
+        cfg_file = self.APP_CONF_FILE_PATH
         server_conf = JanusServerConf(cfg_file)
         return server_conf.get_dict()
 
     def spawn_server_app (self):
         try:
             cmd = ['/opt/janus/bin/janus']
-            logger_std = amg_logger.amagi_logger("tardis.janus.stdout")
-            self.proc = subprocess.Popen(logger_std, cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=False)
+            self.proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
             print("----New Process Spawned----")
             print("Spawning command: %s"%str(cmd))
         except Exception as e:
