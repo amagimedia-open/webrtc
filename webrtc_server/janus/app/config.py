@@ -1,6 +1,6 @@
 import sys
 
-from .modules.configParser import ConfigParser
+from modules.configParser import ConfigParser
 
 #Maybe send the google protocol buffer directly here in case
 #of GRPC, not sure right now.

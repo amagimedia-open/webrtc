@@ -3,7 +3,7 @@
 import sys
 import traceback
 
-from .server import WebRTCServer
+from server import WebRTCServer
 
 def run_forever():
     try:
