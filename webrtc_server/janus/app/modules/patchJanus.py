@@ -1,6 +1,5 @@
 import sys
 import os
-import pkg_resources
 from jinja2 import Template
 
 def patch_janus_config_file(input_file, output_file, args):

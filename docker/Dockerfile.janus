@@ -9,19 +9,18 @@ COPY ["workspace.tgz",\
 
 RUN mkdir -p webrtc_build \
     && tar -zxvf workspace.tgz -C webrtc_build \
+    && cp webrtc_build/requirements.txt /home/root/installation \
     && cd webrtc_build/webrtc_server/janus/build/ && ./build_janus.sh
 
-RUN pip install psutil \
-    && pip install jinja2 \
-    && pip install requests
+RUN pip3 install --no-cache-dir -r requirements.txt -t ./packages/
 
 RUN cd /home/root/installation/ \
     && rm *.tgz
 
 
-#FROM cgr.dev/chainguard/python:latest
+FROM cgr.dev/chainguard/python:latest
 #Use below image for dev debugging
-FROM python:3.11-bullseye
+#FROM python:3
 ARG WORKDIR=/home/root/installation
 # Chain guard images run at non root user level which does not have any write access 
 # This tool is required to write the scanner's result to a file mounted from host. 
@@ -30,4 +29,9 @@ USER 0
 WORKDIR $WORKDIR
 COPY --from=builder /opt/janus /opt/
 COPY --from=builder /home/root/installation/webrtc_build/webrtc_server/ $WORKDIR/webrtc_server
+COPY --from=builder $WORKDIR/packages/ $WORKDIR/
 
+# Set PYTHONPATH to include the packages directory
+ENV PYTHONPATH $WORKDIR
+
+ENTRYPOINT ["python3","-u","/home/root/installation/webrtc_server/janus/app/main.py"]

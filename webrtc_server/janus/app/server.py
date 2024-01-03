@@ -38,7 +38,7 @@ class WebRTCServer:
     def spawn_server_app (self):
         try:
             cmd = ['/opt/janus/bin/janus']
-            self.proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+            self.proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=False)
             print("----New Process Spawned----")
             print("Spawning command: %s"%str(cmd))
         except Exception as e:
