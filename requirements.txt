@@ -1,3 +1,5 @@
 psutil
 jinja2
 requests
+configobj
+redis

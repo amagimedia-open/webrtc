@@ -10,6 +10,7 @@ import logging
 import fileinput
 import subprocess
 import psutil
+import threading
 
 from config import JanusServerConf
 from modules import patchJanus
@@ -35,10 +36,20 @@ class WebRTCServer:
         server_conf = JanusServerConf(cfg_file)
         return server_conf.get_dict()
 
+    def log_output(self, process):
+        while True:
+            output_line = process.stdout.readline()
+            if not output_line:
+                break
+            print(output_line, end="")
+
     def spawn_server_app (self):
         try:
             cmd = ['/opt/janus/bin/janus']
-            self.proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=False)
+            self.proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, shell=False)
+            # Create a separate thread for logging the output
+            log_thread = threading.Thread(target=self.log_output, args=(self.proc,), daemon=True)
+            log_thread.start()
             print("----New Process Spawned----")
             print("Spawning command: %s"%str(cmd))
         except Exception as e:

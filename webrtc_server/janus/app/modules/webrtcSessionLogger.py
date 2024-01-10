@@ -117,7 +117,7 @@ class WebrtcSessionLogger:
 
         # log each line
         for log_string in self._log_strings:
-            self._session_logger.info (log_string)
+            print (log_string)
 
         # Reset log string list
         self._log_strings = []
