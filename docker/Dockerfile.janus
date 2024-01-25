@@ -10,7 +10,8 @@ COPY ["workspace.tgz",\
 RUN mkdir -p webrtc_build \
     && tar -zxvf workspace.tgz -C webrtc_build \
     && cp webrtc_build/requirements.txt /home/root/installation \
-    && cd webrtc_build/webrtc_server/janus/build/ && ./build_janus.sh
+    && cd webrtc_build/webrtc_server/janus/build/ && ./build_janus.sh \
+    && cd /home/root/installation/webrtc_build/webrtc_server/janus/build/ && ./copy_janus_libs.sh
 
 RUN pip3 install --no-cache-dir -r requirements.txt -t ./packages/
 
@@ -32,11 +33,12 @@ COPY --from=builder /home/root/installation/webrtc_build/webrtc_server/ $WORKDIR
 COPY --from=builder /home/root/installation/webrtc_build/config_discovery/ $WORKDIR/config_discovery
 COPY --from=builder /home/root/installation/webrtc_build/docker/entrypoint.py $WORKDIR/entrypoint.py
 COPY --from=builder $WORKDIR/packages/ $WORKDIR/
-COPY --from=builder /lib/x86_64-linux-gnu/* /lib/x86_64-linux-gnu/
+#COPY --from=builder /lib/x86_64-linux-gnu/* /lib/x86_64-linux-gnu/
+COPY --from=builder /tmp/janus/* /lib/x86_64-linux-gnu/
 COPY --from=builder /lib/libsrtp2.so.1 /lib/
 
 
 # Set PYTHONPATH to include the packages directory
 ENV PYTHONPATH $WORKDIR
 
-#ENTRYPOINT ["python3","/home/root/installation/entrypoint.py"]
+ENTRYPOINT ["python3","/home/root/installation/entrypoint.py"]
