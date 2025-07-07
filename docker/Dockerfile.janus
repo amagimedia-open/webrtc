@@ -7,17 +7,25 @@
 ###############################################################################
 
 # Use lightweight alpine image as base image to build the server and the worker
-FROM python:3 AS build
+FROM python:3 AS builder
 
 # Specify labels
 LABEL author=manish.sharma@amagi.com
 LABEL maintainer=manish.sharma@amagi.com
+
+ENV DEBIAN_FRONTEND="noninteractive" 
+ENV TZ="UTC"
+ENV INITRD No
 
 WORKDIR /home/root/installation
 
 # Copy the repository to build
 COPY ["workspace.tgz",\
       "/home/root/installation/"]
+
+# Download other dependency
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    cmake
 
 # Install network analysis tools
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -36,3 +44,25 @@ RUN pip3 install --no-cache-dir -r requirements.txt -t ./packages/
 
 RUN cd /home/root/installation/ \
     && rm *.tgz
+
+
+# Release Stage Dockerfile
+
+FROM public.ecr.aws/amagi-media-labs-sec/secure-container-base/python:3.13
+
+ARG WORKDIR=/home/root/installation
+WORKDIR $WORKDIR
+
+COPY --from=builder /opt/janus /opt/janus/
+COPY --from=builder /home/root/installation/webrtc_build/webrtc_server/ $WORKDIR/webrtc_server
+# TODO
+COPY --from=builder /home/root/installation/webrtc_build/config_discovery/ $WORKDIR/config_discovery
+COPY --from=builder /home/root/installation/webrtc_build/docker/entrypoint.py $WORKDIR/entrypoint.py
+COPY --from=builder $WORKDIR/packages/ $WORKDIR/
+COPY --from=builder /tmp/janus/* /lib/x86_64-linux-gnu/
+COPY --from=builder /lib/libsrtp2.so.1 /lib/libsrtp2.so.1
+
+# Set PYTHONPATH to include the packages directory
+ENV PYTHONPATH $WORKDIR
+
+ENTRYPOINT ["python3","/home/root/installation/entrypoint.py"]

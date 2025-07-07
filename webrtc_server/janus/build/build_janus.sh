@@ -42,13 +42,11 @@ cd $DIR
 pip install ninja
 pip install meson
 
-
 cd $DIR && wget --no-check-certificate https://libnice.freedesktop.org/releases/libnice-0.1.19.tar.gz && \
 	tar xvf libnice-0.1.19.tar.gz && \
     cd libnice-0.1.19 && \
     meson --prefix=$DIR/usr build && ninja -C build && ninja -C build install && \
 	rm -rf $DIR/libnice-0.1.19*
-
 
 ### Build libwebsockets
 cd $DIR && rm -rf libwebsockets | true && \
