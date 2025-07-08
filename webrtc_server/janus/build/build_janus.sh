@@ -2,13 +2,13 @@
 
 set -x
 
-DIR="/home/root/installation/"
+DIR="/home/root/installation"
 
 ### build tools ###
 apt-get update && apt-get install -y \
 	automake
 
-### Janus ###
+### Install Janus related dependencies ###
 apt-get update && apt-get install -y \
 	libmicrohttpd-dev \
 	libjansson-dev \
@@ -25,7 +25,7 @@ apt-get update && apt-get install -y \
     gtk-doc-tools \
 	libcurl4-openssl-dev
 
-### Build libmicrohttpd
+### Build libmicrohttpd ###
 cd $DIR && git clone https://github.com/Karlson2k/libmicrohttpd.git && \
     cd libmicrohttpd && \
     git checkout v0.9.75 && \
@@ -34,21 +34,21 @@ cd $DIR && git clone https://github.com/Karlson2k/libmicrohttpd.git && \
     make && \
     make install && \
     rm -rf $DIR/libmicrohttpd*
-
+mkdir -p /usr/lib/x86_64-linux-gnu/pkgconfig
 cp $DIR/usr/lib/pkgconfig/libmicrohttpd.pc /usr/lib/x86_64-linux-gnu/pkgconfig/libmicrohttpd.pc
 
-### Build libnice
+### Build libnice ###
 cd $DIR
-pip install ninja
-pip install meson
-
+export PATH=$PATH:/root/.local/bin
+pipx install ninja
+pipx install meson
 cd $DIR && wget --no-check-certificate https://libnice.freedesktop.org/releases/libnice-0.1.19.tar.gz && \
 	tar xvf libnice-0.1.19.tar.gz && \
     cd libnice-0.1.19 && \
     meson --prefix=$DIR/usr build && ninja -C build && ninja -C build install && \
 	rm -rf $DIR/libnice-0.1.19*
 
-### Build libwebsockets
+### Build libwebsockets ###
 cd $DIR && rm -rf libwebsockets | true && \
 	git clone https://github.com/amagimedia-open/libwebsockets.git && \
 	cd libwebsockets && \
@@ -60,7 +60,7 @@ cd $DIR && rm -rf libwebsockets | true && \
 	make install && \
 	rm -rf $DIR/libwebsockets*
 
-### Build libsrtp
+### Build libsrtp ###
 cd $DIR && git clone https://github.com/cisco/libsrtp.git && \
 	cd libsrtp && \
 	git checkout v2.2.0 && \
@@ -69,26 +69,24 @@ cd $DIR && git clone https://github.com/cisco/libsrtp.git && \
 	make install && \
 	rm -rf $DIR/libsrtp*
 
-### Build sofia-sip
-cd $DIR && cd sofia-sip-1.12.11 && \
-    cp /home/root/installation/tardis_build/webrtc_server/janus/build/0001-fix-undefined-behaviour.patch ./ && \
-	patch -p1 -u < 0001-fix-undefined-behaviour.patch && \
-	./configure --prefix=$DIR/usr && \
-	make && \
-	make install && \
-	rm -rf $DIR/sofia-sip-1.12.11*
+### Build sofia-sip ###
+cd $DIR && git clone https://github.com/freeswitch/sofia-sip.git && \
+	cd sofia-sip && git checkout v1.13.7 && \
+	cp /home/root/installation/webrtc_build/webrtc_server/janus/build/0001-fix-undefined-behaviour.patch ./ && \
+	bash autogen.sh && ./configure && make && make install && \
+	rm -rf $DIR/sofia-sip*
 
-### Copy libs to build janus
+
+### Copy libs to build janus ###
 cd $DIR && cp -pvr $DIR/usr/* /usr/
-cp /usr/lib/x86_64-linux-gnu/pkgconfig/nice.pc /home/root/cerbero/build/dist/linux_x86_64/lib/pkgconfig/nice.pc
 
-### Build janus gateway
+### Build janus gateway ###
 cd $DIR && git clone https://github.com/meetecho/janus-gateway.git && \
 	cd janus-gateway && \
     git checkout v0.12.0 && \
 	# Issue Janus, debug memory
 	# https://github.com/meetecho/janus-gateway/issues/1808
-	sed -i 's|//~ #define REFCOUNT_DEBUG|#define REFCOUNT_DEBUG|g' refcount.h && \
+	# sed -i 's|//~ #define REFCOUNT_DEBUG|#define REFCOUNT_DEBUG|g' refcount.h && \
 	./autogen.sh && \
         # Enable code dump janus
         #export CFLAGS="-fsanitize=address -fno-omit-frame-pointer" && \
@@ -103,5 +101,5 @@ cd $DIR && git clone https://github.com/meetecho/janus-gateway.git && \
 	rm -rf $DIR/janus-gateway*
 
 ### Cleaning ###
-#cd $DIR && rm -rf usr opt && \
+# cd $DIR && rm -rf usr && \
 apt-get clean && apt-get autoclean && apt-get autoremove -y
