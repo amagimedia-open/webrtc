@@ -66,11 +66,11 @@ COPY --from=builder /home/root/installation/webrtc_build/webrtc_server/ $WORKDIR
 # TODO
 # COPY --from=builder /home/root/installation/webrtc_build/config_discovery/ $WORKDIR/config_discovery
 COPY --from=builder /home/root/installation/webrtc_build/docker/entrypoint.py $WORKDIR/entrypoint.py
-COPY --from=builder $WORKDIR/packages/ $WORKDIR/
+COPY --from=builder $WORKDIR/packages/ $WORKDIR/python_packages/
 COPY --from=builder /tmp/janus/* /lib/x86_64-linux-gnu/
 
 # Set PYTHONPATH to include the packages directory
-ENV PYTHONPATH $WORKDIR
+ENV PYTHONPATH $WORKDIR/python_packages/
 
 ENTRYPOINT ["sleep","infinity"]
 # ENTRYPOINT ["python3","/home/root/installation/entrypoint.py"]
