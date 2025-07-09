@@ -69,14 +69,6 @@ cd $DIR && git clone https://github.com/cisco/libsrtp.git && \
 	make install && \
 	rm -rf $DIR/libsrtp*
 
-### Build sofia-sip ###
-cd $DIR && git clone https://github.com/freeswitch/sofia-sip.git && \
-	cd sofia-sip && git checkout v1.13.7 && \
-	cp /home/root/installation/webrtc_build/webrtc_server/janus/build/0001-fix-undefined-behaviour.patch ./ && \
-	bash autogen.sh && ./configure && make && make install && \
-	rm -rf $DIR/sofia-sip*
-
-
 ### Copy libs to build janus ###
 cd $DIR && cp -pvr $DIR/usr/* /usr/
 
