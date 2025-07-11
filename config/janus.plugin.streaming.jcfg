@@ -110,11 +110,11 @@ rtp-sample: {
     description = "Opus/H264 live stream coming from gstreamer"
     metadata = "info"
     audio = true
-    audioport = 7002
+    audioport = 7221
     audiopt = 111
     audiortpmap = "opus/48000/2"
     video = true
-    videoport = 7000
+    videoport = 7220
     videopt = 126
     videortpmap = "H264/90000"
 }
