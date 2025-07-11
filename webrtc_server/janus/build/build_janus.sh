@@ -93,5 +93,5 @@ cd $DIR && git clone https://github.com/meetecho/janus-gateway.git && \
 	rm -rf $DIR/janus-gateway*
 
 ### Cleaning ###
-# cd $DIR && rm -rf usr && \
+cd $DIR && rm -rf usr
 apt-get clean && apt-get autoclean && apt-get autoremove -y
