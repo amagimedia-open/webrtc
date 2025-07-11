@@ -43,7 +43,6 @@ RUN mkdir -p webrtc_build \
 
 # Copy init script, janus python files and config files
 RUN mv webrtc_build/webrtc_server /home/root/installation \
-    && cp webrtc_build/docker/entrypoint.sh /home/root/installation \
     && cp -r webrtc_build/config/* /opt/janus/etc/janus/
 
 # Cleanup workspace
@@ -51,4 +50,4 @@ RUN cd /home/root/installation/ \
     && rm *.tgz \
     && rm -rf webrtc_build
 
-ENTRYPOINT ["bash", "/home/root/installation/entrypoint.sh"]
+ENTRYPOINT ["python3", "/home/root/installation/webrtc_server/janus/app/main.py"]
