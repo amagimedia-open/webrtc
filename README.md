@@ -1,1 +1,1 @@
-# webrtc
+# Docker support for janus gateway server

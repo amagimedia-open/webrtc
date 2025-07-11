@@ -1,2 +1,0 @@
-redis==3.5.3
-lorem==0.1.1    #Test script requirement

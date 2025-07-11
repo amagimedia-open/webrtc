@@ -105,18 +105,18 @@ general: {
 # be the source of a WebRTC broadcast users can subscribe to.
 #
 rtp-sample: {
-    type = {{ args["type"] }}
-    id = {{ args["id"] }}
-    description = {{ args["description"] }}
+    type = "rtp"
+    id = 1
+    description = "Opus/H264 live stream coming from gstreamer"
     metadata = "info"
-    audio = {{ args["audio"] }}
-    audioport = {{ args["audioport"] }}
-    audiopt = {{ args["audiopt"] }}
-    audiortpmap = {{ args["audiortpmap"] }}
-    video = {{ args["video"] }}
-    videoport = {{ args["videoport"] }}
-    videopt = {{ args["videopt"] }}
-    videortpmap = {{ args["videortpmap"] }}
+    audio = true
+    audioport = 7002
+    audiopt = 111
+    audiortpmap = "opus/48000/2"
+    video = true
+    videoport = 7000
+    videopt = 126
+    videortpmap = "H264/90000"
 }
 
 #file-live-sample: {

@@ -35,42 +35,20 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     texinfo \
     wget
 
-# Install network analysis tools
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    tcpdump \
-    net-tools \
-    dnsutils
-
 # Build Janus
 RUN mkdir -p webrtc_build \
     && tar -zxvf workspace.tgz -C webrtc_build \
     && cd webrtc_build/webrtc_server/janus/build/ && ./build_janus.sh \
     && cd /home/root/installation/webrtc_build/webrtc_server/janus/build/ && ./copy_janus_libs.sh
 
-# Install application related python dependencies
-RUN pip3 install --no-cache-dir -r webrtc_build/requirements.txt -t ./packages/
+# Copy init script, janus python files and config files
+RUN mv webrtc_build/webrtc_server /home/root/installation \
+    && cp webrtc_build/docker/entrypoint.sh /home/root/installation \
+    && cp -r webrtc_build/config/* /opt/janus/etc/janus/
 
 # Cleanup workspace
 RUN cd /home/root/installation/ \
-    && rm *.tgz
+    && rm *.tgz \
+    && rm -rf webrtc_build
 
-# Release Stage Dockerfile
-
-FROM public.ecr.aws/amagi-media-labs-sec/secure-container-base/python-dev:3.13.5
-
-ARG WORKDIR=/home/root/installation
-WORKDIR $WORKDIR
-
-COPY --from=builder /opt/janus /opt/janus/
-COPY --from=builder /home/root/installation/webrtc_build/webrtc_server/ $WORKDIR/webrtc_server
-# TODO
-# COPY --from=builder /home/root/installation/webrtc_build/config_discovery/ $WORKDIR/config_discovery
-COPY --from=builder /home/root/installation/webrtc_build/docker/entrypoint.py $WORKDIR/entrypoint.py
-COPY --from=builder $WORKDIR/packages/ $WORKDIR/python_packages/
-COPY --from=builder /tmp/janus/* /lib/x86_64-linux-gnu/
-
-# Set PYTHONPATH to include the packages directory
-ENV PYTHONPATH $WORKDIR/python_packages/
-
-ENTRYPOINT ["sleep","infinity"]
-# ENTRYPOINT ["python3","/home/root/installation/entrypoint.py"]
+ENTRYPOINT ["bash", "/home/root/installation/entrypoint.sh"]
