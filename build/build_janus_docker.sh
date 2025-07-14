@@ -2,6 +2,16 @@
 
 set -x
 
+# Input validation
+if [[ $# -ne 1 ]]
+then
+    echo "USAGE: $0 <tag_name>"
+    exit 1
+fi
+
+# Get the release tag
+TAG=$1
+
 # Define the path vars
 declare -r SCRIPT_DIR=$(dirname ${BASH_SOURCE[0]})
 declare -r PROJROOT=$(realpath $SCRIPT_DIR/../)
@@ -14,7 +24,7 @@ tar tvf ${DOCKER_BUILD_DIR}/workspace.tgz
 
 pushd ${DOCKER_BUILD_DIR}
 
-docker build --no-cache -t amagidevops/tardis:test_webrtc_02 . --platform linux/amd64 --progress=plain -f Dockerfile.janus
+docker build --no-cache -t $TAG . --platform linux/amd64 --progress=plain -f Dockerfile.janus
 
 popd #DOCKER_BUILD_DIR
 popd #PROJROOT

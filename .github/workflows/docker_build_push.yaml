@@ -1,0 +1,68 @@
+# Build Docker image and push to repos
+name: Docker build and push
+on:
+  push:
+    tags:
+      - "*"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref_name }}
+  cancel-in-progress: true
+
+permissions:
+  id-token: write
+  contents: write
+
+jobs:
+  image-details:
+    runs-on: ubuntu-latest
+    outputs:
+      images: ${{ steps.read-json.outputs.images }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - id: read-json
+        run: |
+          FILE=image_details.json
+          if test -f "$FILE"; then
+            echo "images=$(jq -c . $FILE)" >> $GITHUB_OUTPUT
+          fi
+
+  image_build_push:
+    needs: image-details
+    name: Build and Push the docker image
+    runs-on: ubuntu-latest
+    if: ${{ needs.image-details.outputs.images != '' }}
+    strategy:
+      matrix: ${{ fromJSON(needs.image-details.outputs.images) }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: LOGIN TO AWS NON PROD
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: ${{ secrets.GH_NON_PROD_ECR_ROLE }}
+          aws-region: us-east-1
+
+      - name: LOGIN TO AWS ECR NON PROD
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: BUILD DOCKER IMAGE
+        env:
+          BUILD_PATH: ${{ matrix.build_path }}
+          REPOSITORY: ${{ vars.PRODUCT }}/${{ vars.COMPONENT }}/${{ matrix.image_name }}
+          IMAGE_TAG: ${{ github.ref_name }}
+        run: |
+          cd $BUILD_PATH
+          bash build_janus_docker.sh $REPOSITORY:$IMAGE_TAG
+
+      - name: PUSH TO ECR NON PROD
+        env:
+          REGISTRY: ${{ vars.PRIVATE_ECR_NON_PROD }}
+          REPOSITORY: ${{ vars.PRODUCT }}/${{ vars.COMPONENT }}/${{ matrix.image_name }}
+          IMAGE_TAG: ${{ github.ref_name }}
+        run: |
+          docker tag $REPOSITORY:$IMAGE_TAG $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
