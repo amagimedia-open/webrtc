@@ -55,7 +55,8 @@ jobs:
           REPOSITORY: ${{ vars.PRODUCT }}/${{ vars.COMPONENT }}/${{ matrix.image_name }}
           IMAGE_TAG: ${{ github.ref_name }}
         run: |
-          docker build --no-cache -t $REPOSITORY:$IMAGE_TAG $PATH --platform linux/amd64 --progress=plain -f Dockerfile.janus
+          cd $PATH
+          docker build --no-cache -t $REPOSITORY:$IMAGE_TAG . --platform linux/amd64 --progress=plain -f Dockerfile.janus
 
       - name: PUSH TO ECR NON PROD
         env:

@@ -18,10 +18,6 @@ ENV INITRD No
 
 WORKDIR /home/root/installation
 
-# Copy the repository to build
-COPY ["workspace.tgz",\
-      "/home/root/installation/"]
-
 # Download other dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     cmake \
