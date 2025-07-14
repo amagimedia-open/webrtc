@@ -42,9 +42,6 @@ RUN mkdir -p webrtc_build \
     && cd webrtc_build/webrtc_server/janus/build/ && ./build_janus.sh \
     && cd /home/root/installation/webrtc_build/webrtc_server/janus/build/ && ./copy_janus_libs.sh
 
-# Copy janus config files
-RUN cp -r webrtc_build/config/* /opt/janus/etc/janus/
-
 # Cleanup workspace
 RUN cd /home/root/installation/ \
     && rm *.tgz \
