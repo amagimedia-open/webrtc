@@ -51,12 +51,11 @@ jobs:
 
       - name: BUILD DOCKER IMAGE
         env:
-          BUILD_PATH: ${{ matrix.build_path }}
+          PATH: ${{ matrix.path }}
           REPOSITORY: ${{ vars.PRODUCT }}/${{ vars.COMPONENT }}/${{ matrix.image_name }}
           IMAGE_TAG: ${{ github.ref_name }}
         run: |
-          cd $BUILD_PATH
-          bash build_janus_docker.sh $REPOSITORY:$IMAGE_TAG
+          docker build --no-cache -t $REPOSITORY:$IMAGE_TAG $PATH --platform linux/amd64 --progress=plain -f Dockerfile.janus
 
       - name: PUSH TO ECR NON PROD
         env:

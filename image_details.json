@@ -2,7 +2,7 @@
   "include": [
     {
       "image_name": "tardis",
-      "build_path": "build/"
+      "path": "docker/"
     }
   ]
 }
