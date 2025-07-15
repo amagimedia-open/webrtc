@@ -38,7 +38,6 @@ RUN apt-get update && apt-get install -y \
     libmicrohttpd-dev \
     libjansson-dev \
     libglib2.0-dev \
-    libini-config-dev \
     libevent-dev \
     libtool \
     gengetopt \
@@ -48,6 +47,8 @@ RUN apt-get update && apt-get install -y \
     gtk-doc-tools \
     libcurl4-openssl-dev
 
+ENV LD_LIBRARY_PATH=/opt/lib/
+
 ### Build libnice ###
 RUN export PATH=$PATH:/root/.local/bin \
     && pipx install ninja \
@@ -55,7 +56,7 @@ RUN export PATH=$PATH:/root/.local/bin \
     && wget --no-check-certificate https://libnice.freedesktop.org/releases/libnice-0.1.19.tar.gz \
     && tar xvf libnice-0.1.19.tar.gz \
     && cd libnice-0.1.19 \
-    && meson --prefix=/opt build \
+    && meson --prefix=/usr build \
     && ninja -C build \
     && ninja -C build install \
     && cd /home/root/installation \
@@ -67,7 +68,7 @@ RUN git clone https://github.com/amagimedia-open/libwebsockets.git \
     && git checkout gy-increase_max_http_header_data \
     && mkdir build \
     && cd build \
-    && cmake -DLWS_MAX_SMP=1 -DLWS_WITHOUT_TESTAPPS=ON -DCMAKE_INSTALL_PREFIX:PATH=/opt -DCMAKE_C_FLAGS="-fpic" .. \
+    && cmake -DLWS_MAX_SMP=1 -DLWS_WITHOUT_TESTAPPS=ON -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_C_FLAGS="-fpic" .. \
     && make \
     && make install \
     && cd /home/root/installation \
@@ -77,14 +78,11 @@ RUN git clone https://github.com/amagimedia-open/libwebsockets.git \
 RUN git clone https://github.com/cisco/libsrtp.git \
     && cd libsrtp \
     && git checkout v2.2.0 \
-    && ./configure --prefix=/opt --enable-openssl \
+    && ./configure --prefix=/usr --enable-openssl \
     && make shared_library \
     && make install \
     && cd /home/root/installation \
     && rm -rf libsrtp*
-
-ENV PKG_CONFIG_PATH=/opt/lib/x86_64-linux-gnu/pkgconfig/:/opt/lib/pkgconfig/ \
-    LD_LIBRARY_PATH=/opt/lib/:/opt/lib/x86_64-linux-gnu/
 
 ### Build janus gateway ###
 RUN git clone https://github.com/meetecho/janus-gateway.git \
@@ -120,8 +118,7 @@ FROM debian:12.8-slim
 WORKDIR /home/root/installation/
 
 # Set env
-ENV PKG_CONFIG_PATH=/opt/lib/x86_64-linux-gnu/pkgconfig/:/opt/lib/pkgconfig/ \
-    LD_LIBRARY_PATH=/opt/lib/:/opt/lib/x86_64-linux-gnu/
+ENV LD_LIBRARY_PATH=/opt/lib/
 
 # Copy required files
 COPY --from=builder /opt/ /opt/

@@ -21,3 +21,4 @@ done
 # the below libraries do not show up when doing ldd on the janus binary.
 # so, copying them manually instead.
 cp /usr/lib/x86_64-linux-gnu/libmicrohttpd.so.12 $destination
+cp /usr/lib/libwebsockets.so.19 $destination
