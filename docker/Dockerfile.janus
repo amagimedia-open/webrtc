@@ -38,6 +38,7 @@ RUN apt-get update && apt-get install -y \
     libmicrohttpd-dev \
     libjansson-dev \
     libglib2.0-dev \
+    libini-config-dev \
     libevent-dev \
     libtool \
     gengetopt \
@@ -82,7 +83,7 @@ RUN git clone https://github.com/cisco/libsrtp.git \
     && cd /home/root/installation \
     && rm -rf libsrtp*
 
-ENV PKG_CONFIG_PATH=/opt/lib/x86_64-linux-gnu/pkgconfig/:/opt/lib/pkgconfig/
+ENV PKG_CONFIG_PATH=/opt/lib/x86_64-linux-gnu/pkgconfig/:/opt/lib/pkgconfig/ \
     LD_LIBRARY_PATH=/opt/lib/:/opt/lib/x86_64-linux-gnu/
 
 ### Build janus gateway ###
@@ -104,26 +105,26 @@ RUN git clone https://github.com/meetecho/janus-gateway.git \
     && rm -rf janus-gateway*
 
 # Copy janus libs to /opt/
-COPY ["docker/copy_janus_libs.sh", "/home/root/installation/"]
-RUN bash copy_janus_libs.sh
+COPY ["copy_janus_libs.sh", "/home/root/installation/"]
+RUN bash copy_janus_libs.sh \
+    && rm copy_janus_libs.sh
 
 # Cleanup workspace
 RUN apt-get clean \
     && apt-get autoclean \
     && apt-get autoremove -y
 
-ENTRYPOINT ["sleep", "infinity"]
-
 # Release Stage Dockerfile
-# FROM debian:12.8-slim
+FROM debian:12.8-slim
 
-# WORKDIR /home/root/installation/
+WORKDIR /home/root/installation/
 
-# ENV PKG_CONFIG_PATH=/opt/lib/x86_64-linux-gnu/pkgconfig/:/opt/lib/pkgconfig/
-#     LD_LIBRARY_PATH=/opt/lib/:/opt/lib/x86_64-linux-gnu/
+# Set env
+ENV PKG_CONFIG_PATH=/opt/lib/x86_64-linux-gnu/pkgconfig/:/opt/lib/pkgconfig/ \
+    LD_LIBRARY_PATH=/opt/lib/:/opt/lib/x86_64-linux-gnu/
 
-# COPY --from=builder /opt/ /opt/
+# Copy required files
+COPY --from=builder /opt/ /opt/
 
-# # Run Janus as entrypoint process
-# # ENTRYPOINT ["/opt/janus/bin/janus"]
-# ENTRYPOINT ["sleep", "infinity"]
+# Run Janus as entrypoint process
+ENTRYPOINT ["/opt/janus/bin/janus"]
