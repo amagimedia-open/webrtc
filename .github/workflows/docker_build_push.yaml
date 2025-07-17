@@ -39,30 +39,24 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: LOGIN TO AWS NON PROD
+      - name: LOGIN TO AWS Public Account
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          role-to-assume: ${{ secrets.GH_NON_PROD_ECR_ROLE }}
+          role-to-assume: ${{ secrets.GH_ECR_ROLE }}
           aws-region: us-east-1
 
-      - name: LOGIN TO AWS ECR NON PROD
-        id: login-ecr
+      - name: Login to AWS Public ECR
         uses: aws-actions/amazon-ecr-login@v1
+        with:
+          registry-type: public
 
-      - name: BUILD DOCKER IMAGE
+      - name: BUILD and PUSH DOCKER IMAGE
         env:
           PATH: ${{ matrix.path }}
+          REGISTRY: ${{ vars.PUBLIC_ECR }}
           REPOSITORY: ${{ vars.PRODUCT }}/${{ vars.COMPONENT }}/${{ matrix.image_name }}
           IMAGE_TAG: ${{ github.ref_name }}
         run: |
           cd $PATH
-          docker build --no-cache -t $REPOSITORY:$IMAGE_TAG . --platform linux/amd64 --progress=plain -f Dockerfile.janus
-
-      - name: PUSH TO ECR NON PROD
-        env:
-          REGISTRY: ${{ vars.PRIVATE_ECR_NON_PROD }}
-          REPOSITORY: ${{ vars.PRODUCT }}/${{ vars.COMPONENT }}/${{ matrix.image_name }}
-          IMAGE_TAG: ${{ github.ref_name }}
-        run: |
-          docker tag $REPOSITORY:$IMAGE_TAG $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          docker build --no-cache -t $REGISTRY/$REPOSITORY:$IMAGE_TAG . --platform linux/amd64 --progress=plain -f Dockerfile.janus
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
