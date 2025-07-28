@@ -34,6 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ needs.image-details.outputs.images != '' }}
     strategy:
+      fail-fast: false
       matrix: ${{ fromJSON(needs.image-details.outputs.images) }}
     steps:
       - name: Checkout repo
