@@ -1,7 +1,7 @@
 {
   "include": [
     {
-      "image_name": "tardis",
+      "image_name": "webrtc",
       "path": "docker/"
     }
   ]
