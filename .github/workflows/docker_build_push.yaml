@@ -60,5 +60,3 @@ jobs:
         run: |
           cd $PATH
           which docker
-          # docker build --no-cache -t $REGISTRY/$REPOSITORY:$IMAGE_TAG . --platform linux/amd64 --progress=plain -f Dockerfile.janus
-          # docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
