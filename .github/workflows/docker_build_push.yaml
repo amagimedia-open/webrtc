@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   image-details:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     outputs:
       images: ${{ steps.read-json.outputs.images }}
     steps:
@@ -31,7 +31,7 @@ jobs:
   image_build_push:
     needs: image-details
     name: Build and Push the docker image
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     if: ${{ needs.image-details.outputs.images != '' }}
     strategy:
       fail-fast: false
