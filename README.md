@@ -18,9 +18,6 @@ This repo provides a containerized version of the Janus WebRTC Gateway server, b
 - **Other dependencies**:
   - libjansson-dev
   - libglib2.0-dev
-  - libopus-dev
-  - libogg-dev
-  - libini-config-dev
   - libevent-dev
   - libtool
   - gengetopt
