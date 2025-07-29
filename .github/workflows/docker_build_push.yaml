@@ -54,8 +54,11 @@ jobs:
       - name: BUILD and PUSH DOCKER IMAGE
         id: build-push-docker-image
         env:
-          PATH: ${{ matrix.path }}
+          DOCKERFILE_PATH: ${{ matrix.path }}
           REGISTRY: ${{ vars.PUBLIC_ECR }}
           REPOSITORY: ${{ vars.PRODUCT }}/${{ vars.COMPONENT }}/${{ matrix.image_name }}
           IMAGE_TAG: ${{ github.ref_name }}
-        run: echo $PATH
+        run: |
+          cd $DOCKERFILE_PATH
+          docker build --no-cache -t $REGISTRY/$REPOSITORY:$IMAGE_TAG . --platform linux/amd64 --progress=plain -f Dockerfile.janus
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
