@@ -58,5 +58,4 @@ jobs:
           REPOSITORY: ${{ vars.PRODUCT }}/${{ vars.COMPONENT }}/${{ matrix.image_name }}
           IMAGE_TAG: ${{ github.ref_name }}
         run: |
-          cd $PATH
           ls
