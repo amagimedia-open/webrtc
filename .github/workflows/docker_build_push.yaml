@@ -59,4 +59,4 @@ jobs:
           IMAGE_TAG: ${{ github.ref_name }}
         run: |
           cd $PATH
-          docker ps
+          ls
