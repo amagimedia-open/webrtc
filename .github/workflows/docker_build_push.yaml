@@ -52,6 +52,7 @@ jobs:
           registry-type: public
 
       - name: BUILD and PUSH DOCKER IMAGE
+        id: build-push-docker-image
         env:
           PATH: ${{ matrix.path }}
           REGISTRY: ${{ vars.PUBLIC_ECR }}
