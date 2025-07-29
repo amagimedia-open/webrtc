@@ -57,5 +57,4 @@ jobs:
           REGISTRY: ${{ vars.PUBLIC_ECR }}
           REPOSITORY: ${{ vars.PRODUCT }}/${{ vars.COMPONENT }}/${{ matrix.image_name }}
           IMAGE_TAG: ${{ github.ref_name }}
-        run: |
-          ls
+        run: ls -l
